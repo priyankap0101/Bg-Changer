@@ -22,3 +22,8 @@ Follow these instructions to get a copy of the project up and running on your lo
 - Node.js and npm installed on your local machine.
 
 
+## Deployed Link
+
+- **Check out the live website at https://bg-changer-react-vite.netlify.app/**
+
+
