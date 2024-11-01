@@ -1,14 +1,20 @@
 import { useState } from "react";
+import { SketchPicker } from "react-color";
 
 function App() {
   const [color, setColor] = useState("olive");
   const [colorHistory, setColorHistory] = useState([]);
   const [favoriteColors, setFavoriteColors] = useState([]);
-  const [brightness, setBrightness] = useState(100); // Default brightness at 100%
+  const [brightness, setBrightness] = useState(100);
   const [showModal, setShowModal] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+  const [isGradient, setIsGradient] = useState(false);
+  const [secondaryColor, setSecondaryColor] = useState("blue");
+  const [previousColor, setPreviousColor] = useState(color);
 
   // Function to update the color and add it to history
   const handleColorChange = (newColor) => {
+    setPreviousColor(color);
     setColor(newColor);
     if (!colorHistory.includes(newColor)) {
       setColorHistory((prev) => [newColor, ...prev.slice(0, 2)]);
@@ -28,12 +34,38 @@ function App() {
     }
   };
 
+  // Export favorite colors as JSON file
+  const exportPalette = () => {
+    const palette = JSON.stringify(favoriteColors, null, 2);
+    const blob = new Blob([palette], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "favorite-colors.json";
+    link.click();
+  };
+
+  // Toggle gradient mode
+  const toggleGradient = () => setIsGradient(!isGradient);
+
+  // Randomize color brightness
+  const randomizeColor = () => {
+    const randomBrightness = Math.floor(Math.random() * 50) + 75;
+    setBrightness(randomBrightness);
+  };
+
+  // Undo last color change
+  const undoLastColor = () => {
+    handleColorChange(previousColor);
+  };
+
   return (
     <div
       className="flex flex-col items-center justify-center w-full h-screen duration-500"
       style={{
-        backgroundColor: color,
-        filter: `brightness(${brightness}%)`, // Apply brightness filter based on slider
+        background: isGradient
+          ? `linear-gradient(${color}, ${secondaryColor})`
+          : color,
+        filter: `brightness(${brightness}%)`,
         transition:
           "background-color 0.5s ease-in-out, filter 0.5s ease-in-out",
       }}
@@ -55,7 +87,27 @@ function App() {
         >
           Save to Favorites
         </button>
+        <button
+          onClick={undoLastColor}
+          className="px-2 py-1 ml-2 text-sm text-white bg-yellow-600 rounded shadow-lg hover:bg-yellow-700"
+        >
+          Undo
+        </button>
       </div>
+
+      {/* Color Picker */}
+      <button
+        onClick={() => setShowPicker(!showPicker)}
+        className="px-2 py-1 mb-4 text-white bg-purple-600 rounded shadow-lg hover:bg-purple-700"
+      >
+        {showPicker ? "Close Picker" : "Pick a Color"}
+      </button>
+      {showPicker && (
+        <SketchPicker
+          color={color}
+          onChangeComplete={(color) => handleColorChange(color.hex)}
+        />
+      )}
 
       {/* Brightness Slider */}
       <div className="flex items-center mb-6">
@@ -76,6 +128,20 @@ function App() {
         />
         <span className="ml-4 text-lg">{brightness}%</span>
       </div>
+
+      {/* Gradient Toggle and Export Palette */}
+      <button
+        onClick={toggleGradient}
+        className="px-2 py-1 mb-4 text-white bg-pink-600 rounded shadow-lg hover:bg-pink-700"
+      >
+        Toggle Gradient
+      </button>
+      <button
+        onClick={exportPalette}
+        className="px-2 py-1 mb-4 text-white bg-orange-600 rounded shadow-lg hover:bg-orange-700"
+      >
+        Export Palette
+      </button>
 
       {/* Buttons for Changing Colors */}
       <div className="fixed inset-x-0 flex flex-wrap justify-center px-2 bottom-12">
@@ -102,15 +168,13 @@ function App() {
             </button>
           ))}
 
-          {/* Reset Button */}
+          {/* Reset and Random Color Buttons */}
           <button
             onClick={() => handleColorChange("olive")}
             className="px-5 py-2 text-black transition-transform duration-150 ease-in-out transform bg-gray-200 rounded-full shadow-lg outline-none hover:scale-110"
           >
             Reset
           </button>
-
-          {/* Random Color Button */}
           <button
             onClick={() =>
               handleColorChange(
@@ -120,6 +184,12 @@ function App() {
             className="px-5 py-2 text-white transition-transform duration-150 ease-in-out transform bg-gray-800 rounded-full shadow-lg outline-none hover:scale-110"
           >
             🎲 Random Color
+          </button>
+          <button
+            onClick={randomizeColor}
+            className="px-5 py-2 text-white transition-transform duration-150 ease-in-out transform bg-teal-600 rounded-full shadow-lg outline-none hover:scale-110"
+          >
+            Randomize Brightness
           </button>
         </div>
       </div>
