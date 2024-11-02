@@ -129,6 +129,26 @@ function App() {
         <span className="ml-4 text-lg">{brightness}%</span>
       </div>
 
+      {/* Preset Theme Buttons */}
+      <div className="flex gap-4 mb-4">
+        {[
+          { color: "#ff6347", label: "Tomato" },
+          { color: "#4682b4", label: "SteelBlue" },
+          { color: "#32cd32", label: "LimeGreen" },
+          { color: "#dda0dd", label: "Plum" },
+          { color: "#f08080", label: "LightCoral" },
+        ].map((theme) => (
+          <button
+            key={theme.color}
+            onClick={() => handleColorChange(theme.color)}
+            className="px-4 py-2 text-white rounded shadow-lg"
+            style={{ backgroundColor: theme.color }}
+          >
+            {theme.label}
+          </button>
+        ))}
+      </div>
+
       {/* Gradient Toggle and Export Palette */}
       <button
         onClick={toggleGradient}
@@ -217,28 +237,6 @@ function App() {
           />
         ))}
       </div>
-
-      {/* Modal for Color Information */}
-      {showModal && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          onClick={() => setShowModal(false)}
-        >
-          <div
-            className="p-4 bg-white rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-semibold">Color Information</h2>
-            <p>Hex: {color}</p>
-            <button
-              onClick={() => setShowModal(false)}
-              className="px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-700"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
