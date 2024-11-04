@@ -60,7 +60,7 @@ function App() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center w-full h-screen duration-500"
+      className="flex flex-col items-center justify-center w-full h-screen p-8 duration-500"
       style={{
         background: isGradient
           ? `linear-gradient(${gradientAngle}deg, ${color}, ${secondaryColor})`
@@ -70,154 +70,112 @@ function App() {
           "background-color 0.5s ease-in-out, filter 0.5s ease-in-out",
       }}
     >
-      <div className="mb-4 text-xl font-bold text-gray-800">
-        <span onClick={() => setShowPicker(true)} className="cursor-pointer">
-          Current Color: <span>{color}</span>
-        </span>
-        <button
-          onClick={copyHexCode}
-          className="px-2 py-1 ml-2 text-sm text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700"
-        >
-          Copy Hex
-        </button>
-        <button
-          onClick={saveToFavorites}
-          className="px-2 py-1 ml-2 text-sm text-white bg-green-600 rounded shadow-lg hover:bg-green-700"
-        >
-          Save to Favorites
-        </button>
-        <button
-          onClick={undoLastColor}
-          className="px-2 py-1 ml-2 text-sm text-white bg-yellow-600 rounded shadow-lg hover:bg-yellow-700"
-        >
-          Undo
-        </button>
-        <button
-          onClick={resetColor}
-          className="px-2 py-1 ml-2 text-sm text-white bg-red-600 rounded shadow-lg hover:bg-red-700"
-        >
-          Reset Color
-        </button>
-      </div>
+      <div className="w-full max-w-md p-4 space-y-4 bg-white rounded-lg shadow-lg">
+        <div className="mb-4 text-xl font-bold text-center text-gray-800">
+          Current Color: <span style={{ color }}>{color}</span>
+        </div>
 
-      <button
-        onClick={() => setShowPicker(!showPicker)}
-        className="px-2 py-1 mb-4 text-white bg-purple-600 rounded shadow-lg hover:bg-purple-700"
-      >
-        {showPicker ? "Close Picker" : "Pick a Color"}
-      </button>
-      {showPicker && (
-        <SketchPicker
-          color={color}
-          onChangeComplete={(color) => handleColorChange(color.hex)}
-        />
-      )}
-
-      <div className="flex items-center mb-6">
-        <label
-          htmlFor="brightness-slider"
-          className="mr-4 text-lg font-semibold text-gray-800"
-        >
-          Brightness
-        </label>
-        <input
-          id="brightness-slider"
-          type="range"
-          min="50"
-          max="150"
-          value={brightness}
-          onChange={(e) => setBrightness(e.target.value)}
-          className="w-32 h-2 bg-gray-300 rounded-lg cursor-pointer accent-blue-500"
-        />
-        <button
-          onClick={resetBrightness}
-          className="px-2 py-1 ml-4 text-sm text-white bg-gray-600 rounded shadow-lg hover:bg-gray-700"
-        >
-          Reset Brightness
-        </button>
-        <span className="ml-4 text-lg">{brightness}%</span>
-      </div>
-
-      <div className="flex items-center gap-2 mb-6">
-        <label htmlFor="gradient-angle" className="text-lg font-semibold">
-          Gradient Angle
-        </label>
-        <input
-          type="range"
-          min="0"
-          max="360"
-          value={gradientAngle}
-          onChange={(e) => setGradientAngle(e.target.value)}
-          className="w-32 h-2 rounded-lg cursor-pointer accent-blue-500"
-        />
-        <span className="ml-2">{gradientAngle}°</span>
-      </div>
-
-      <div className="flex gap-4 mb-4">
-        {[
-          { color: "#ff6347", label: "Tomato" },
-          { color: "#4682b4", label: "SteelBlue" },
-        ].map((theme) => (
-          <button
-            key={theme.color}
-            onClick={() => handleColorChange(theme.color)}
-            className="px-4 py-2 text-white rounded shadow-lg hover:scale-105"
-            style={{ backgroundColor: theme.color }}
-          >
-            {theme.label}
+        <div className="flex justify-center gap-3">
+          <button onClick={copyHexCode} className="bg-blue-600 action-btn">
+            Copy Hex
           </button>
-        ))}
-      </div>
+          <button onClick={saveToFavorites} className="bg-green-600 action-btn">
+            Save to Favorites
+          </button>
+          <button onClick={undoLastColor} className="bg-yellow-600 action-btn">
+            Undo
+          </button>
+          <button onClick={resetColor} className="bg-red-600 action-btn">
+            Reset Color
+          </button>
+        </div>
 
-      <button
-        onClick={toggleGradient}
-        className="px-2 py-1 mb-4 text-white bg-pink-600 rounded shadow-lg hover:bg-pink-700"
-      >
-        Toggle Gradient
-      </button>
-      <button
-        onClick={exportPalette}
-        className="px-2 py-1 mb-4 text-white bg-orange-600 rounded shadow-lg hover:bg-orange-700"
-      >
-        Export Palette
-      </button>
-      <button
-        onClick={randomColor}
-        className="px-2 py-1 mb-4 text-white bg-teal-600 rounded shadow-lg hover:bg-teal-700"
-      >
-        Random Color
-      </button>
-
-      <div className="flex gap-2 mb-6">
-        {colorHistory.map((historyColor, index) => (
-          <button
-            key={index}
-            onClick={() => handleColorChange(historyColor)}
-            className="w-8 h-8 rounded-full shadow-lg hover:ring-2 hover:ring-offset-2 hover:ring-gray-500"
-            style={{ backgroundColor: historyColor }}
+        <button
+          onClick={() => setShowPicker(!showPicker)}
+          className="w-full px-4 py-2 mb-4 text-white bg-purple-600 rounded shadow-lg hover:bg-purple-700"
+        >
+          {showPicker ? "Close Picker" : "Pick a Color"}
+        </button>
+        {showPicker && (
+          <SketchPicker
+            color={color}
+            onChangeComplete={(color) => handleColorChange(color.hex)}
           />
-        ))}
-      </div>
+        )}
 
-      <div className="fixed p-4 bg-white rounded-lg shadow-lg bottom-10 left-10">
-        <h3 className="text-lg font-semibold">Favorite Colors</h3>
-        <div className="flex gap-2 mt-2">
-          {favoriteColors.map((favColor, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <button
-                onClick={() => handleColorChange(favColor)}
-                className="w-8 h-8 rounded-full"
-                style={{ backgroundColor: favColor }}
-              />
-              <span className="text-sm">{favColor}</span>
-              <button
-                onClick={() => deleteFavoriteColor(favColor)}
-                className="text-xs text-red-500 hover:underline"
-              >
-                Remove
-              </button>
-            </div>
+        <div className="mt-4 space-y-2">
+          <label htmlFor="brightness-slider" className="text-lg font-semibold">
+            Brightness
+          </label>
+          <input
+            id="brightness-slider"
+            type="range"
+            min="50"
+            max="150"
+            value={brightness}
+            onChange={(e) => setBrightness(e.target.value)}
+            className="w-full"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <label htmlFor="gradient-angle" className="text-lg font-semibold">
+            Gradient Angle
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="360"
+            value={gradientAngle}
+            onChange={(e) => setGradientAngle(e.target.value)}
+            className="w-full"
+          />
+          <span className="ml-2">{gradientAngle}°</span>
+        </div>
+
+        <div className="flex gap-4 mt-4">
+          <button onClick={toggleGradient} className="bg-pink-600 action-btn">
+            Toggle Gradient
+          </button>
+          <button onClick={exportPalette} className="bg-orange-600 action-btn">
+            Export Palette
+          </button>
+          <button onClick={randomColor} className="bg-teal-600 action-btn">
+            Random Color
+          </button>
+        </div>
+
+        <div className="flex gap-2 mt-4">
+          {colorHistory.map((historyColor, index) => (
+            <button
+              key={index}
+              onClick={() => handleColorChange(historyColor)}
+              className="w-8 h-8 rounded-full shadow-lg hover:ring-2 hover:ring-offset-2"
+              style={{ backgroundColor: historyColor }}
+            />
           ))}
+        </div>
+
+        <div className="p-4 mt-6 bg-gray-100 rounded-lg">
+          <h3 className="text-lg font-semibold">Favorite Colors</h3>
+          <div className="flex gap-2 mt-2">
+            {favoriteColors.map((favColor, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <button
+                  onClick={() => handleColorChange(favColor)}
+                  className="w-8 h-8 rounded-full"
+                  style={{ backgroundColor: favColor }}
+                />
+                <span className="text-sm">{favColor}</span>
+                <button
+                  onClick={() => deleteFavoriteColor(favColor)}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
