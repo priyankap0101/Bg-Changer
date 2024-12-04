@@ -1,146 +1,163 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { SketchPicker } from "react-color";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SketchPicker } from "react-color";
+import { FaCopy, FaUndo, FaSave, FaRandom, FaPalette } from "react-icons/fa";
 
 function App() {
-  const [color, setColor] = useState("#808000");
-  const [uploadedImage, setUploadedImage] = useState(null);
-  const [imageLoading, setImageLoading] = useState(false);
-  const canvasRef = useRef(null);
-  const imgRef = useRef(null);
+  const [color, setColor] = useState("#808000"); // Hex format for easier handling
+  const [colorHistory, setColorHistory] = useState([]);
+  const [favoriteColors, setFavoriteColors] = useState([]);
+  const [brightness, setBrightness] = useState(100);
+  const [gradientAngle, setGradientAngle] = useState(90);
+  const [showPicker, setShowPicker] = useState(false);
+  const [isGradient, setIsGradient] = useState(false);
+  const [secondaryColor, setSecondaryColor] = useState("#0000FF");
 
-  // Handle image upload and display on the canvas
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const imageUrl = URL.createObjectURL(file);
-    setImageLoading(true);
-    setUploadedImage(imageUrl);
-  };
-
-  // Convert RGB to HEX
-  const rgbToHex = (r, g, b) => {
-    return (
-      "#" +
-      [r, g, b]
-        .map((x) => {
-          const hex = x.toString(16);
-          return hex.length === 1 ? "0" + hex : hex;
-        })
-        .join("")
-    );
-  };
-
-  // Draw the image on the canvas
-  const drawImageOnCanvas = () => {
-    if (canvasRef.current && imgRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      const img = imgRef.current;
-
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0, img.width, img.height);
+  const handleColorChange = (newColor) => {
+    setColor(newColor);
+    if (!colorHistory.includes(newColor)) {
+      setColorHistory((prev) => [newColor, ...prev.slice(0, 4)]); // Limit history to 5
     }
   };
 
-  // Pick color from the canvas
-  const handleCanvasClick = (event) => {
-    if (!canvasRef.current) return;
+  const notify = (message) => toast.success(message);
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const pixelData = ctx.getImageData(x, y, 1, 1).data;
-    const hexColor = rgbToHex(pixelData[0], pixelData[1], pixelData[2]);
-    setColor(hexColor);
-    toast.success(`Picked color: ${hexColor}`);
+  const copyHexCode = () => {
+    navigator.clipboard.writeText(color);
+    notify(`Copied: ${color}`);
   };
 
-  // Ensure the image is drawn after it's fully loaded
-  useEffect(() => {
-    if (uploadedImage) {
-      setImageLoading(true);
-      drawImageOnCanvas();
+  const saveToFavorites = () => {
+    if (!favoriteColors.includes(color)) {
+      setFavoriteColors([...favoriteColors, color]);
+      notify("Color saved to favorites!");
     }
-  }, [uploadedImage]);
+  };
+
+  const deleteFavoriteColor = (favColor) => {
+    setFavoriteColors(favoriteColors.filter((c) => c !== favColor));
+    notify("Color removed from favorites.");
+  };
+
+  const exportPalette = () => {
+    const palette = JSON.stringify(favoriteColors, null, 2);
+    const blob = new Blob([palette], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "favorite-colors.json";
+    link.click();
+    notify("Palette exported successfully!");
+  };
+
+  const randomColor = () => {
+    const randomHex = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    handleColorChange(randomHex);
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-50">
-      <ToastContainer />
-
-      <div className="w-full max-w-3xl p-6 space-y-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-6 text-3xl font-semibold text-center text-gray-800">
-          Color Picker from Image
-        </h1>
-
-        {/* Image Upload Section */}
-        <div className="flex flex-col items-center mb-4">
-          <label className="w-full p-3 mb-2 font-medium text-center text-white transition bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
-            Upload Image
-          </label>
-          <p className="text-sm text-gray-500">
-            Click the canvas to pick a color.
-          </p>
+    <div
+      className="flex flex-col items-center justify-center w-full h-screen p-8 bg-gradient-to-tr"
+      style={{
+        background: isGradient
+          ? `linear-gradient(${gradientAngle}deg, ${color}, ${secondaryColor})`
+          : color,
+        filter: `brightness(${brightness}%)`,
+        transition: "background 0.5s ease-in-out, filter 0.5s ease-in-out",
+      }}
+    >
+      <div className="w-full max-w-lg p-6 space-y-6 bg-white rounded-lg shadow-lg">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800">Current Color:</h2>
+          <span className="text-lg font-semibold" style={{ color }}>
+            {color}
+          </span>
         </div>
 
-        {/* Canvas Section */}
-        {uploadedImage && (
-          <div className="flex items-center justify-center mb-6">
-            <div className="relative w-full max-w-lg">
-              <canvas
-                ref={canvasRef}
-                onClick={handleCanvasClick}
-                className="w-full h-auto border rounded-lg shadow-md cursor-crosshair"
-              />
-              {/* Hidden img element for loading the image into the canvas */}
-              <img
-                ref={imgRef}
-                src={uploadedImage}
-                alt="uploaded"
-                onLoad={() => {
-                  setImageLoading(false);
-                  drawImageOnCanvas();
-                }}
-                className="hidden"
-              />
-              {imageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                  <div className="text-lg text-white">Loading...</div>
-                </div>
-              )}
-            </div>
-          </div>
+        <div className="flex justify-center gap-4">
+          <button onClick={copyHexCode} className="bg-blue-500 action-btn">
+            <FaCopy className="inline mr-1" /> Copy Hex
+          </button>
+          <button onClick={saveToFavorites} className="bg-green-500 action-btn">
+            <FaSave className="inline mr-1" /> Save
+          </button>
+          <button onClick={randomColor} className="bg-yellow-500 action-btn">
+            <FaRandom className="inline mr-1" /> Random
+          </button>
+        </div>
+
+        <button
+          onClick={() => setShowPicker(!showPicker)}
+          className="w-full px-4 py-2 text-white transition-transform bg-purple-600 rounded shadow-lg hover:bg-purple-700 hover:scale-105"
+        >
+          {showPicker ? "Close Picker" : "Pick a Color"}
+        </button>
+        {showPicker && (
+          <SketchPicker
+            color={color}
+            onChangeComplete={(color) => handleColorChange(color.hex)}
+          />
         )}
 
-        {/* Color Display Section */}
-        <div className="flex items-center justify-between p-4 mb-6 bg-gray-100 rounded-lg shadow-inner">
-          <span className="font-medium text-gray-700">Selected Color:</span>
-          <div
-            style={{ backgroundColor: color }}
-            className="w-10 h-10 border-2 border-gray-300 rounded-full"
+        <div>
+          <label className="text-lg font-semibold">Brightness</label>
+          <input
+            type="range"
+            min="50"
+            max="150"
+            value={brightness}
+            onChange={(e) => setBrightness(e.target.value)}
+            className="w-full accent-purple-600"
           />
-          <span className="font-semibold text-gray-800">{color}</span>
         </div>
 
-        {/* Color Picker (for direct color selection if needed) */}
-        <SketchPicker
-          color={color}
-          onChange={(updatedColor) => setColor(updatedColor.hex)}
-        />
+        <div className="flex items-center gap-4">
+          <label className="text-lg font-semibold">Gradient Angle</label>
+          <input
+            type="range"
+            min="0"
+            max="360"
+            value={gradientAngle}
+            onChange={(e) => setGradientAngle(e.target.value)}
+            className="w-full accent-blue-500"
+          />
+          <span className="text-sm font-medium">{gradientAngle}°</span>
+        </div>
+
+        <div className="flex gap-4">
+          <button
+            onClick={() => setIsGradient(!isGradient)}
+            className="bg-pink-500 action-btn"
+          >
+            Toggle Gradient
+          </button>
+          <button onClick={exportPalette} className="bg-orange-500 action-btn">
+            <FaPalette className="inline mr-1" /> Export
+          </button>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold">Favorite Colors</h3>
+          <div className="grid grid-cols-4 gap-2 mt-2">
+            {favoriteColors.map((favColor, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <button
+                  onClick={() => handleColorChange(favColor)}
+                  className="w-10 h-10 border-2 border-gray-300 rounded-full"
+                  style={{ backgroundColor: favColor }}
+                />
+                <button
+                  onClick={() => deleteFavoriteColor(favColor)}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+      <ToastContainer theme={isGradient ? "dark" : "light"} />
     </div>
   );
 }
