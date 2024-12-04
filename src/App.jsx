@@ -55,6 +55,14 @@ function App() {
     handleColorChange(randomHex);
   };
 
+  const getContrastTextColor = (hexColor) => {
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? "#000" : "#FFF";
+  };
+
   return (
     <div
       className="flex flex-col items-center justify-center w-full h-screen p-8 bg-gradient-to-tr"
@@ -67,21 +75,38 @@ function App() {
       }}
     >
       <div className="w-full max-w-lg p-6 space-y-6 bg-white rounded-lg shadow-lg">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800">Current Color:</h2>
-          <span className="text-lg font-semibold" style={{ color }}>
+        <div className="space-y-2 text-center">
+          <h2 className="text-3xl font-extrabold tracking-tight text-gray-800 dark:text-white">
+            Current Color
+          </h2>
+          <span
+            className="inline-flex items-center justify-center px-4 py-2 text-xl font-semibold transition-transform transform rounded-full shadow-md hover:scale-105"
+            style={{
+              backgroundColor: color,
+              color: getContrastTextColor(color), // Adjusts text color for better readability
+            }}
+          >
             {color}
           </span>
         </div>
 
         <div className="flex justify-center gap-4">
-          <button onClick={copyHexCode} className="bg-blue-500 action-btn">
+          <button
+            onClick={copyHexCode}
+            className="p-2 bg-blue-500 rounded-md action-btn"
+          >
             <FaCopy className="inline mr-1" /> Copy Hex
           </button>
-          <button onClick={saveToFavorites} className="bg-green-500 action-btn">
+          <button
+            onClick={saveToFavorites}
+            className="p-2 bg-green-500 rounded-md action-btn"
+          >
             <FaSave className="inline mr-1" /> Save
           </button>
-          <button onClick={randomColor} className="bg-yellow-500 action-btn">
+          <button
+            onClick={randomColor}
+            className="p-2 bg-yellow-500 rounded-md action-btn"
+          >
             <FaRandom className="inline mr-1" /> Random
           </button>
         </div>
@@ -127,12 +152,15 @@ function App() {
         <div className="flex gap-4">
           <button
             onClick={() => setIsGradient(!isGradient)}
-            className="bg-pink-500 action-btn"
+            className="p-2 bg-pink-500 rounded-md action-btn"
           >
             Toggle Gradient
           </button>
-          <button onClick={exportPalette} className="bg-orange-500 action-btn">
-            <FaPalette className="inline mr-1" /> Export
+          <button
+            onClick={exportPalette}
+            className="p-2 bg-orange-500 rounded-md action-btn hover:bg-red-500 hover:shadow-inner hover:text-white hover:shadow-red-800"
+          >
+            <FaPalette className="inline mr-1 " /> Export
           </button>
         </div>
 
