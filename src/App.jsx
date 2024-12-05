@@ -158,9 +158,9 @@ function App() {
           </button>
           <button
             onClick={exportPalette}
-            className="p-2 bg-orange-500 rounded-md action-btn hover:bg-red-500 hover:shadow-inner hover:text-white hover:shadow-red-800"
+            className="px-4 py-2 font-medium text-white transition-all duration-300 ease-in-out bg-orange-500 rounded-md hover:bg-red-600 hover:shadow-lg hover:shadow-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
-            <FaPalette className="inline mr-1 " /> Export
+            Export Palette
           </button>
         </div>
 
