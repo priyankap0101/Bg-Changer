@@ -159,7 +159,7 @@ function App() {
 
           <button
             onClick={exportPalette}
-            className="px-4 py-2 font-medium text-white transition-all duration-300 ease-in-out bg-orange-500 rounded-md hover:bg-red-600 hover:shadow-lg hover:shadow-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="px-5 py-2.5 font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-full shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:from-red-600 hover:to-red-500 focus:outline-none focus:ring-4 focus:ring-red-400 focus:ring-offset-2"
           >
             Export Palette
           </button>
