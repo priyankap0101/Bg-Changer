@@ -152,10 +152,11 @@ function App() {
         <div className="flex gap-4">
           <button
             onClick={() => setIsGradient(!isGradient)}
-            className="p-2 bg-pink-500 rounded-md action-btn"
+            className="px-6 py-3 text-sm font-semibold text-white transition-transform duration-300 transform rounded-full shadow-md bg-gradient-to-r from-pink-500 to-purple-500 hover:scale-105 hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:ring-offset-2 focus:ring-offset-gray-100"
           >
             Toggle Gradient
           </button>
+
           <button
             onClick={exportPalette}
             className="px-4 py-2 font-medium text-white transition-all duration-300 ease-in-out bg-orange-500 rounded-md hover:bg-red-600 hover:shadow-lg hover:shadow-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
