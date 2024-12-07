@@ -93,10 +93,11 @@ function App() {
         <div className="flex justify-center gap-4">
           <button
             onClick={copyHexCode}
-            className="p-2 bg-blue-500 rounded-md action-btn"
+            className="flex items-center px-4 py-2 font-medium text-white transition-all duration-300 ease-in-out bg-blue-500 rounded-full hover:bg-blue-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            <FaCopy className="inline mr-1" /> Copy Hex
+            <FaCopy className="mr-2 text-lg" /> Copy Hex
           </button>
+
           <button
             onClick={saveToFavorites}
             className="p-2 bg-green-500 rounded-md action-btn"
