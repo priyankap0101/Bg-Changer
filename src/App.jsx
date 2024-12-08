@@ -65,7 +65,7 @@ function App() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center w-full min-h-screen p-8 bg-gradient-to-tr"
+      className="flex flex-col items-center justify-center w-full min-h-screen p-4 bg-gradient-to-tr"
       style={{
         background: isGradient
           ? `linear-gradient(${gradientAngle}deg, ${color}, ${secondaryColor})`
@@ -74,15 +74,15 @@ function App() {
         transition: "background 0.5s ease-in-out, filter 0.5s ease-in-out",
       }}
     >
-      <div className="w-full max-w-3xl p-6 space-y-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
-        {/* Current Color Section */}
-        <div className="space-y-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
+      <div className="w-full max-w-md p-4 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        {/* Header Section */}
+        <div className="text-center">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
             Color Palette Manager
           </h2>
-          <div className="inline-block p-4 border-2 border-gray-200 rounded-lg shadow-inner dark:border-gray-700">
+          <div className="inline-block p-2 border rounded-lg shadow-inner dark:border-gray-700">
             <span
-              className="inline-block px-6 py-2 text-xl font-semibold tracking-wide rounded-lg shadow-md"
+              className="inline-block px-4 py-1 text-sm font-medium rounded-lg"
               style={{
                 backgroundColor: color,
                 color: getContrastTextColor(color),
@@ -93,35 +93,35 @@ function App() {
           </div>
         </div>
 
-        {/* Buttons Section */}
-        <div className="p-6 space-y-6 bg-gray-100 rounded-lg shadow dark:bg-gray-700">
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+        {/* Actions Section */}
+        <div className="p-3 space-y-4 rounded-md shadow-sm bg-gray-50 dark:bg-gray-700">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
             Actions
           </h3>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2">
             <button
               onClick={randomColor}
-              className="flex items-center justify-center px-4 py-2 font-medium text-white transition-transform bg-yellow-500 rounded-lg shadow-md hover:bg-yellow-600 hover:scale-105"
+              className="flex items-center justify-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded shadow hover:bg-yellow-600"
             >
-              <FaRandom className="mr-2" /> Random
+              <FaRandom className="mr-1" /> Random
             </button>
             <button
               onClick={copyHexCode}
-              className="flex items-center justify-center px-4 py-2 font-medium text-white transition-transform bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 hover:scale-105"
+              className="flex items-center justify-center px-2 py-1 text-xs font-medium text-white bg-blue-500 rounded shadow hover:bg-blue-600"
             >
-              <FaCopy className="mr-2" /> Copy Hex
+              <FaCopy className="mr-1" /> Copy Hex
             </button>
             <button
               onClick={saveToFavorites}
-              className="flex items-center justify-center px-4 py-2 font-medium text-white transition-transform bg-green-500 rounded-lg shadow-md hover:bg-green-600 hover:scale-105"
+              className="flex items-center justify-center px-2 py-1 text-xs font-medium text-white bg-green-500 rounded shadow hover:bg-green-600"
             >
-              <FaSave className="mr-2" /> Save
+              <FaSave className="mr-1" /> Save
             </button>
             <button
               onClick={() => setShowPicker(!showPicker)}
-              className="flex items-center justify-center px-4 py-2 font-medium text-white transition-transform bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 hover:scale-105"
+              className="flex items-center justify-center px-2 py-1 text-xs font-medium text-white bg-purple-600 rounded shadow hover:bg-purple-700"
             >
-              <FaPalette className="mr-2" />{" "}
+              <FaPalette className="mr-1" />{" "}
               {showPicker ? "Close Picker" : "Pick Color"}
             </button>
           </div>
@@ -129,8 +129,8 @@ function App() {
 
         {/* Color Picker Section */}
         {showPicker && (
-          <div className="p-4 bg-gray-100 rounded-lg shadow dark:bg-gray-700">
-            <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+          <div className="p-3 rounded-md shadow bg-gray-50 dark:bg-gray-700">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
               Color Picker
             </h3>
             <SketchPicker
@@ -140,10 +140,10 @@ function App() {
           </div>
         )}
 
-        {/* Brightness and Gradient Controls */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div className="p-4 bg-gray-100 rounded-lg shadow dark:bg-gray-700">
-            <label className="block text-lg font-semibold text-gray-700 dark:text-gray-200">
+        {/* Controls Section */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="p-3 rounded-md shadow bg-gray-50 dark:bg-gray-700">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
               Brightness
             </label>
             <input
@@ -155,8 +155,8 @@ function App() {
               className="w-full accent-purple-600"
             />
           </div>
-          <div className="p-4 bg-gray-100 rounded-lg shadow dark:bg-gray-700">
-            <label className="block text-lg font-semibold text-gray-700 dark:text-gray-200">
+          <div className="p-3 rounded-md shadow bg-gray-50 dark:bg-gray-700">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
               Gradient Angle
             </label>
             <input
@@ -167,40 +167,39 @@ function App() {
               onChange={(e) => setGradientAngle(e.target.value)}
               className="w-full accent-blue-500"
             />
-            <span className="block mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">
+            <span className="block mt-1 text-xs text-gray-500 dark:text-gray-300">
               {gradientAngle}°
             </span>
           </div>
         </div>
 
-        {/* Gradient Toggle and Export Buttons */}
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+        {/* Gradient Toggle & Export */}
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
           <button
             onClick={() => setIsGradient(!isGradient)}
-            className="px-6 py-3 text-sm font-semibold text-white transition-transform duration-300 transform rounded-lg shadow-md bg-gradient-to-r from-pink-500 to-purple-500 hover:scale-105 hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:ring-offset-2 focus:ring-offset-gray-100"
+            className="px-4 py-2 text-xs font-semibold text-white rounded shadow bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
           >
             Toggle Gradient
           </button>
-
           <button
             onClick={exportPalette}
-            className="px-5 py-2.5 font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-lg shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:from-red-600 hover:to-red-500 focus:outline-none focus:ring-4 focus:ring-red-400 focus:ring-offset-2"
+            className="px-4 py-2 text-xs font-semibold text-white rounded shadow bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-500"
           >
             Export Palette
           </button>
         </div>
 
-        {/* Favorite Colors Section */}
+        {/* Favorite Colors */}
         <div>
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
             Favorite Colors
           </h3>
-          <div className="grid grid-cols-4 gap-2 mt-4">
+          <div className="grid grid-cols-4 gap-2 mt-3">
             {favoriteColors.map((favColor, index) => (
               <div key={index} className="flex flex-col items-center">
                 <button
                   onClick={() => handleColorChange(favColor)}
-                  className="w-10 h-10 border-2 border-gray-300 rounded-full"
+                  className="w-8 h-8 border border-gray-300 rounded-full"
                   style={{ backgroundColor: favColor }}
                 />
                 <button
